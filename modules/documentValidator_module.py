@@ -22,3 +22,9 @@ class DocumentValidator:
         if file_size_MB > self.MAX_FILE_SIZE_MB: # 2. Check file size against max size
             raise ValueError(f"File too large: {file_size_MB:.2f}MB. \nMax allowed is {self.MAX_FILE_SIZE_MB}MB.")
         return True
+    
+    def validate(self, file_path: str) -> bool: # runs both size and format checks on file.
+        self.check_format(file_path)
+        self.check_size(file_path)
+        print(f"File {os.path.basename(file_path)} is compatible with the system.")
+        return True
