@@ -28,3 +28,15 @@ class DocumentValidator:
         self.check_size(file_path)
         print(f"File {os.path.basename(file_path)} is compatible with the system.")
         return True
+"""
+#testing  
+file_path1 = "datasets/archived/Borang Melapor SUJATI KL-2.pdf"
+checker = DocumentValidator()
+try:
+    checker.validate(file_path1)
+except ValueError as e:
+    print(f"[ERROR] {e}")
+    exit()
+
+--Successful.
+"""
