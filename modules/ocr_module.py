@@ -45,3 +45,18 @@ class LayoutDetector:
         layout = self.model.detect(image_array) # type: ignore
         layout = layout.sort(key=lambda b: (b.coordinates[1], b.coordinates[0])) #sort blocks: top to bottom, left to right
         return layout
+
+
+class TextExtractor:
+    def __init__(self, lang="msa+eng"):
+        self.lang = lang
+    
+    def extract_text_from_image(self, image):
+        text = pytesseract.image_to_string(image, lang=self.lang) #using OCR to extract texts from image
+        return text.strip()
+    
+    def extract_text_from_region(self, image, coordinates): #extract texts from specific region of an image
+        x1, y1, x2, y2 = map(int, coordinates) #x1-y1 top-left corner, x2-y2 bottom-right corner (defining rectangle in image)
+        cropped = image.crop((x1, y1, x2, y2)) 
+        return self.extract_text_from_image(cropped) #ocr only takes text in that cropped region
+    
