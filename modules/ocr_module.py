@@ -75,3 +75,61 @@ class DocumentConverter: #for tesseract to process so change pdf to image
         if image.mode != 'RGB':
             image = image.convert('RGB')
         return image #return PIL image object
+    
+
+class OCRManager: #initiates previous classes
+    def __init__(self, lang= "msa+eng", threshold = 0.8):
+        self.layout_detector = LayoutDetector(threshold=threshold)
+        self.text_extractor = TextExtractor(lang=lang)
+        self.converter = DocumentConverter()
+
+    def process_image(self, image, page_num = 1):
+        if isinstance(image, str):
+            image = self.converter.load_image(image)
+        '''else:
+            if image.mode != 'RGB':
+                image = image.convert('RGB')''' #keeping here jic error
+        print(f"[OCRManager] Processing page {page_num}")
+
+        layout = self.layout_detector.detect_layout(image) 
+        print(f"[OCRManager] Found {len(layout)} blocks") # type: ignore
+
+        blocks = []
+        for idx, block in enumerate(layout): # type: ignore
+            text = self.text_extractor.extract_text_from_region(image, block.coordinates)
+            x1, y1, x2, y2 = map(int, block.coordinates)
+            block_data = {
+                'block_id': idx,
+                'type': block.type,
+                'coordinates': {'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2},
+                'confidence': block.score,
+                'text': text
+            }
+            blocks.append(block_data)
+        
+        return { #obtain layout information in blocks
+            'page': page_num,
+            'num_blocks': len(blocks),
+            'blocks': blocks
+        }
+    
+    def process_pdf(self, pdf_path, dpi=300):
+        images = self.converter.pdf_to_images(pdf_path, dpi=dpi)
+        results = []
+        for page_num, image in enumerate(images, start=1):
+            page_result = self.process_image(image, page_num=page_num)
+            results.append(page_result)
+        return results
+    
+    def get_full_text(self, page_result):
+        text_parts = []
+        for block in page_result['blocks']:
+            if not block['text']:
+                continue
+            if block['type'] == "Title":
+                text_parts.append(f"\n{'='*50}")
+                text_parts.append(block['text'])
+                text_parts.append(f"{'='*50}\n")
+            else:
+                text_parts.append(block['text'])
+        return '\n\n'.join(text_parts)
