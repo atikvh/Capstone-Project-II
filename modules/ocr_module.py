@@ -33,7 +33,7 @@ class LayoutDetector:
             print(f"[LayoutDetector] Error loading model: {e}")
             raise
 
-    def detect_layout(self, image):
+    def detect_layout(self, image): #implement layoutparser
         if self.model is None:
             self.load_model()
 
@@ -47,7 +47,7 @@ class LayoutDetector:
         return layout
 
 
-class TextExtractor:
+class TextExtractor: #extract text from specific layout region
     def __init__(self, lang="msa+eng"):
         self.lang = lang
     
@@ -59,4 +59,19 @@ class TextExtractor:
         x1, y1, x2, y2 = map(int, coordinates) #x1-y1 top-left corner, x2-y2 bottom-right corner (defining rectangle in image)
         cropped = image.crop((x1, y1, x2, y2)) 
         return self.extract_text_from_image(cropped) #ocr only takes text in that cropped region
+
+
+class DocumentConverter: #for tesseract to process so change pdf to image
+    @staticmethod
+    def pdf_to_images(pdf_path, dpi=300):
+        print(f"[DocumentConverter] Converting PDF: {pdf_path}")
+        images = convert_from_path(pdf_path, dpi=dpi)
+        print(f"[DocumentConverter] Converted {len(images)} pages")
+        return images
     
+    @staticmethod
+    def load_image(image_path):
+        image = Image.open(image_path)
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
+        return image #return PIL image object
