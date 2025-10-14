@@ -133,3 +133,43 @@ class OCRManager: #initiates previous classes
             else:
                 text_parts.append(block['text'])
         return '\n\n'.join(text_parts)
+    
+class ResultManager:
+    @staticmethod
+    def save_to_text_file(results, output_path):
+        with open(output_path, 'w', encoding='utf-8') as f:
+            for page_result in results:
+                ResultManager._write_page_header(f, page_result['page'])
+                ResultManager._write_blocks(f, page_result['blocks'])
+                ResultManager._write_full_text(f, page_result)
+        print(f"[ResultManager] Saved to: {output_path}")
+
+    @staticmethod
+    def _write_page_header(file, page_num):
+        file.write(f"{'='*70}\n")
+        file.write(f"PAGE {page_num}\n")
+        file.write(f"{'='*70}\n\n")
+
+    @staticmethod
+    def _write_blocks(file, blocks):
+        file.write(f"Detected blocks: {len(blocks)}\n\n")
+        for block in blocks:
+            file.write(f"{block['type']} Confidence: {block['confidence']:.2f}\n")
+            file.write(f"Location: {block['coordinates']}\n")
+            file.write(f"Text: {block['text']}\n")
+            file.write(f"{'-'*50}\n\n")
+    
+    @staticmethod
+    def _write_full_text(file, page_result):
+        file.write(f"\n{'#'*70}\n")
+        file.write(f"FULL TEXT (PAGE {page_result['page']})\n")
+        file.write(f"{'#'*70}\n\n")
+
+        for block in page_result['blocks']:
+            if block['text']:
+                if block['text'] == "Title":
+                    file.write(f"\n{'='*50}\n")
+                    file.write(f"{block['text']}\n")
+                    file.write(f"{'='*50}\n\n")
+                else:
+                    file.write(f"{block['text']}\n\n")
