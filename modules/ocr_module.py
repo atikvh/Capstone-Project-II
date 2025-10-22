@@ -1,72 +1,28 @@
 """
 This handles the extraction and detection of content and layout of the
-uploaded documents. LayoutParser and Tesseract is used here.
+uploaded documents. Tesseract is used here supporting malay and english.
+LayoutParser has been omitted from this module for lightweight processing.
 """
-import layoutparser as lp
-from layoutparser.models import Detectron2LayoutModel
 from pdf2image import convert_from_path
 from PIL import Image
-import numpy as np
 import pytesseract
 import os
 
-class LayoutDetector:
-    def __init__(self, lang="msa+eng", threshold=0.8):
-        self.lang = lang
-        self.threshold = threshold #ignore below threshold
-        self.model = None #detector model
-
-    def load_model(self):
-        if self.model is not None:
-            print("[LayoutDetector] Model already loaded.")
-            return
-        
-        print("[LayoutDetector] Loading model...")
-        try:
-            self.model = Detectron2LayoutModel( #loading model for layout
-                config_path="lp://PubLayNet/faster_rcnn_R_50_FPN_3x/config",
-                label_map={0: "Text", 1: "Title"},
-                extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", self.threshold]
-            )
-            print("[LayoutDetector] Model loaded successfully.")
-        except Exception as e:
-            print(f"[LayoutDetector] Error loading model: {e}")
-            raise
-
-    def detect_layout(self, image): #implement layoutparser
-        if self.model is None:
-            self.load_model()
-
-        if isinstance (image, Image.Image):
-            image_array = np.array(image) #converting PIL image to numpy if needed
-        else:
-            image_array = image
-        #use model to detect layout
-        layout = self.model.detect(image_array) # type: ignore
-        layout = layout.sort(key=lambda b: (b.coordinates[1], b.coordinates[0])) #sort blocks: top to bottom, left to right
-        return layout
-
-
-class TextExtractor: #extract text from specific layout region
+class TextExtractor: #extract text from images using Tesseract
     def __init__(self, lang="msa+eng"):
         self.lang = lang
     
     def extract_text_from_image(self, image):
         text = pytesseract.image_to_string(image, lang=self.lang) #using OCR to extract texts from image
         return text.strip()
-    
-    def extract_text_from_region(self, image, coordinates): #extract texts from specific region of an image
-        x1, y1, x2, y2 = map(int, coordinates) #x1-y1 top-left corner, x2-y2 bottom-right corner (defining rectangle in image)
-        cropped = image.crop((x1, y1, x2, y2)) 
-        return self.extract_text_from_image(cropped) #ocr only takes text in that cropped region
 
 
 class DocumentConverter: #for tesseract to process so change pdf to image
     @staticmethod
     def pdf_to_images(pdf_path, dpi=300):
         print(f"[DocumentConverter] Converting PDF: {pdf_path}")
-        images = convert_from_path(pdf_path, dpi=dpi)
-        print(f"[DocumentConverter] Converted {len(images)} pages")
+        images = convert_from_path(pdf_path, dpi=dpi, first_page=1, last_page=1)
+        print(f"[DocumentConverter] Converted {len(images)} page(s)")
         return images
     
     @staticmethod
@@ -78,8 +34,7 @@ class DocumentConverter: #for tesseract to process so change pdf to image
     
 
 class OCRManager: #initiates previous classes
-    def __init__(self, lang= "msa+eng", threshold = 0.8):
-        self.layout_detector = LayoutDetector(threshold=threshold)
+    def __init__(self, lang= "msa+eng"):
         self.text_extractor = TextExtractor(lang=lang)
         self.converter = DocumentConverter()
 
@@ -89,28 +44,23 @@ class OCRManager: #initiates previous classes
         '''else:
             if image.mode != 'RGB':
                 image = image.convert('RGB')''' #keeping here jic error
-        print(f"[OCRManager] Processing page {page_num}")
+        print(f"[OCRManager] Processing page {page_num}...")
 
-        layout = self.layout_detector.detect_layout(image) 
-        print(f"[OCRManager] Found {len(layout)} blocks") # type: ignore
+        text = self.text_extractor.extract_text_from_image(image)
+        w, h = image.size
 
-        blocks = []
-        for idx, block in enumerate(layout): # type: ignore
-            text = self.text_extractor.extract_text_from_region(image, block.coordinates)
-            x1, y1, x2, y2 = map(int, block.coordinates)
-            block_data = {
-                'block_id': idx,
-                'type': block.type,
-                'coordinates': {'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2},
-                'confidence': block.score,
-                'text': text
-            }
-            blocks.append(block_data)
+        block_data = {
+            "block_id": 0,
+            "type": "Text",
+            "coordinates": {"x1":0, "y1":0, "x2":w, "y2":h},
+            "confidence": 1.0,
+            "text": text
+        }
         
         return { #obtain layout information in blocks
             'page': page_num,
-            'num_blocks': len(blocks),
-            'blocks': blocks
+            'num_blocks': 1,
+            'blocks': [block_data]
         }
     
     def process_pdf(self, pdf_path, dpi=300):
@@ -121,28 +71,23 @@ class OCRManager: #initiates previous classes
             results.append(page_result)
         return results
     
-    def get_full_text(self, page_result):
-        text_parts = []
-        for block in page_result['blocks']:
-            if not block['text']:
-                continue
-            if block['type'] == "Title":
-                text_parts.append(f"\n{'='*50}")
-                text_parts.append(block['text'])
-                text_parts.append(f"{'='*50}\n")
-            else:
-                text_parts.append(block['text'])
-        return '\n\n'.join(text_parts)
+    def get_full_text(self, results):
+        all_text = []
+        for page in results:
+            for block in page["blocks"]:
+                if block["text"]:
+                    all_text.append(block["text"])
+        return '\n\n'.join(all_text)
     
-class ResultManager:
+class OCRResultManager:
     @staticmethod
     def save_to_text_file(results, output_path):
         with open(output_path, 'w', encoding='utf-8') as f:
             for page_result in results:
-                ResultManager._write_page_header(f, page_result['page'])
-                ResultManager._write_blocks(f, page_result['blocks'])
-                ResultManager._write_full_text(f, page_result)
-        print(f"[ResultManager] Saved to: {output_path}")
+                OCRResultManager._write_page_header(f, page_result["page"])
+                OCRResultManager._write_blocks(f, page_result["blocks"])
+                OCRResultManager._write_full_text(f, page_result)
+        print(f"[ResultManager] Saved OCR result to: {output_path}")
 
     @staticmethod
     def _write_page_header(file, page_num):
@@ -166,10 +111,28 @@ class ResultManager:
         file.write(f"{'#'*70}\n\n")
 
         for block in page_result['blocks']:
-            if block['text']:
-                if block['text'] == "Title":
-                    file.write(f"\n{'='*50}\n")
-                    file.write(f"{block['text']}\n")
-                    file.write(f"{'='*50}\n\n")
-                else:
-                    file.write(f"{block['text']}\n\n")
+            if block["text"]:
+                file.write(f"{block['text']}\n\n")
+
+# ========== TEST BLOCK ==========
+if __name__ == "__main__":
+    print("🔍 Starting OCR Module Test...\n")
+
+    pdf_path = "datasets/archived/Borang Melapor SUJATI KL-2.pdf"
+    output_path = "datasets/text_result.txt"
+
+    try:
+        ocr = OCRManager(lang="msa+eng")
+        results = ocr.process_pdf(pdf_path)
+
+        # Save the result to text file
+        OCRResultManager.save_to_text_file(results, output_path)
+
+        print("\n✅ OCR module test completed successfully!")
+        print(f"Results saved to: {output_path}")
+
+    except Exception as e:
+        print(f"\n❌ OCR module test failed: {e}")
+
+        
+# .venv\Scripts\activate.bat

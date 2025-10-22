@@ -1,0 +1,190 @@
+======================================================================
+PAGE 1
+======================================================================
+
+Detected blocks: 1
+
+Text Confidence: 1.00
+Location: {'x1': 0, 'y1': 0, 'x2': 2550, 'y2': 3300}
+Text: BORANG MELAPOR / REPORTING FORM & Ps ; a
+
+|
+
+KA
+
+S
+Sila sertakan / Please attach: y
+1 salinan Kad Pengenalan / 1 copy of identity card
+
+1 salinan pasport / 1 copy of passport
+
+Ng
+
+Sea
+Senn
+
+DY
+Po
+
+1 salinan surat pengesahan Universiti atau Institusi (Tempatan atau/dan Luar Negara)
+
+/1copy of offer letter from University or Institution (Local or/and Overseas)
+
+BAHAGIAN | / SECTION |
+
+BUTIR PERIBADI / PERSONAL PARTICULARS:
+
+Sila gunakan huruf besar / Please use block letters
+
+FULL NAME (as shown in the passport)
+ATIKAH HAZIQAH BINTI ABD JALIL
+
+NAMA PENUH (seperti yang terdapat dalam pasport)
+
+ALAMAT (di Malaysia) /
+
+ADDRESS (in Malaysia) :
+
+B-23-05 , KENWINGSTON SKYLOFTS , USJ 1 JALAN
+SUBANG 1 PETALING JAYA SELANGOR 47600
+
+TELEFON /
+TELEPHONE (Malaysia) : +601136221320
+
+TELEFON /
+TELEPHONE (Brunei) : 46738965555
+
+TARIKH LAHIR /
+Date of Birth : 02/11/2002
+
+TEMPAT LAHIR /
+Place of Birth : BRUNEI DARUSSALAM
+
+KERAKYATAN /
+CITIZENSHIP :
+BRUNEI
+
+BILANGAN PASSPORT /
+PASSPORT NUMBER : C0O787190
+
+BILANGAN SIJIL KERAKYATAN /
+CITIZENSHIP CERTIFICATE NUMBER :
+
+TARIKH MANSUH PASPORT /
+PASSPORT EXPIRY DATE :
+
+BILANGAN KAD PENGENALAN BRUNEI/
+BRUNEI IDENTITY CARD NUMBER : 01-129682
+
+WARNA KAD PENGENALAN /
+IDENTITY CARD COLOUR : Kuning
+
+BILANGAN KAD MATRIX / EMEL /
+MATRIX CARD NUMBER : E-MAIL : ATIKVHHAZIQVH@GMAIL.COM
+JANTINA / SEX : Female NAMA PENJAGA /
+
+GUARDIAN NAME : Kamsiah binti Haji Morshidi
+
+ALAMAT PENJAGA (di Brunei) /
+GUARDIAN ADDRESS (in Brunei) :
+No 6, Simpang 665-2-15, Kg Lumapas
+
+TELEFON PENJAGA (senang untuk dihubungi /
+GUARDIAN NAME (easy to be contacted) :
+
++673 875 2255
+--------------------------------------------------
+
+
+######################################################################
+FULL TEXT (PAGE 1)
+######################################################################
+
+BORANG MELAPOR / REPORTING FORM & Ps ; a
+
+|
+
+KA
+
+S
+Sila sertakan / Please attach: y
+1 salinan Kad Pengenalan / 1 copy of identity card
+
+1 salinan pasport / 1 copy of passport
+
+Ng
+
+Sea
+Senn
+
+DY
+Po
+
+1 salinan surat pengesahan Universiti atau Institusi (Tempatan atau/dan Luar Negara)
+
+/1copy of offer letter from University or Institution (Local or/and Overseas)
+
+BAHAGIAN | / SECTION |
+
+BUTIR PERIBADI / PERSONAL PARTICULARS:
+
+Sila gunakan huruf besar / Please use block letters
+
+FULL NAME (as shown in the passport)
+ATIKAH HAZIQAH BINTI ABD JALIL
+
+NAMA PENUH (seperti yang terdapat dalam pasport)
+
+ALAMAT (di Malaysia) /
+
+ADDRESS (in Malaysia) :
+
+B-23-05 , KENWINGSTON SKYLOFTS , USJ 1 JALAN
+SUBANG 1 PETALING JAYA SELANGOR 47600
+
+TELEFON /
+TELEPHONE (Malaysia) : +601136221320
+
+TELEFON /
+TELEPHONE (Brunei) : 46738965555
+
+TARIKH LAHIR /
+Date of Birth : 02/11/2002
+
+TEMPAT LAHIR /
+Place of Birth : BRUNEI DARUSSALAM
+
+KERAKYATAN /
+CITIZENSHIP :
+BRUNEI
+
+BILANGAN PASSPORT /
+PASSPORT NUMBER : C0O787190
+
+BILANGAN SIJIL KERAKYATAN /
+CITIZENSHIP CERTIFICATE NUMBER :
+
+TARIKH MANSUH PASPORT /
+PASSPORT EXPIRY DATE :
+
+BILANGAN KAD PENGENALAN BRUNEI/
+BRUNEI IDENTITY CARD NUMBER : 01-129682
+
+WARNA KAD PENGENALAN /
+IDENTITY CARD COLOUR : Kuning
+
+BILANGAN KAD MATRIX / EMEL /
+MATRIX CARD NUMBER : E-MAIL : ATIKVHHAZIQVH@GMAIL.COM
+JANTINA / SEX : Female NAMA PENJAGA /
+
+GUARDIAN NAME : Kamsiah binti Haji Morshidi
+
+ALAMAT PENJAGA (di Brunei) /
+GUARDIAN ADDRESS (in Brunei) :
+No 6, Simpang 665-2-15, Kg Lumapas
+
+TELEFON PENJAGA (senang untuk dihubungi /
+GUARDIAN NAME (easy to be contacted) :
+
++673 875 2255
+
