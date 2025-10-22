@@ -29,7 +29,7 @@ class DocumentValidator:
         print(f"File {os.path.basename(file_path)} is compatible with the system.")
         return True
 """
-#testing  
+# ========== TEST BLOCK ==========
 file_path1 = "datasets/archived/Borang Melapor SUJATI KL-2.pdf"
 checker = DocumentValidator()
 try:
