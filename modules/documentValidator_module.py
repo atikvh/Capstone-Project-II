@@ -28,15 +28,14 @@ class DocumentValidator:
         self.check_size(file_path)
         print(f"File {os.path.basename(file_path)} is compatible with the system.")
         return True
-"""
-# ========== TEST BLOCK ==========
-file_path1 = "datasets/archived/Borang Melapor SUJATI KL-2.pdf"
-checker = DocumentValidator()
-try:
-    checker.validate(file_path1)
-except ValueError as e:
-    print(f"[ERROR] {e}")
-    exit()
 
---Successful.
-"""
+# ========== TEST BLOCK ==========-
+if __name__ == "__main__":
+    # Example test only runs when executing this file directly.
+    file_path1 = "datasets/archived/Gangguan Teknikal.jpg"
+    checker = DocumentValidator()
+    try:
+        checker.validate(file_path1)
+    except ValueError as e:
+        print(f"[ERROR] {e}")
+        exit()
