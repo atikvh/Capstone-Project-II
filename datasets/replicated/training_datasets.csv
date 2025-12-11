@@ -1,11 +1,81 @@
-id, text, category
-1,"This memo outlines the new digital ID registration process for all employees.",Memo
-2,"We are pleased to inform you that your leave request has been approved by HR.",Letter
-3,"Please complete the attached application form for user account creation.",Form
-4,"Surat ini adalah untuk mengesahkan penerimaan borang permohonan anda.",Letter
-5,"Pemohon dikehendaki mengisi borang permohonan dengan maklumat yang lengkap.",Form
-6,"Sila ambil perhatian bahawa semua kakitangan perlu menyerahkan laporan bulanan sebelum tarikh 25.",Memo
-7,"We acknowledge receipt of your official letter regarding system access approval.",Letter
-8,"Borang permohonan akaun sistem hendaklah disertakan dengan salinan kad pengenalan.",Form
-9,"Memo ini bertujuan untuk memaklumkan perubahan waktu operasi baharu bagi semua pejabat.",Memo
-10,"Ini surat rasmi bagi tujuan pengesahan dokumen syarikat.",Letter
+id,text,category
+1,"Official letter from the Permanent Secretary's Office regarding the monthly departmental meeting schedule.",Administrative & Correspondence
+2,"Surat rasmi daripada Pejabat Setiausaha Tetap mengenai penjadualan mesyuarat bulanan jabatan.",Administrative & Correspondence
+3,"Internal memo informing about the appointment of a new administrative officer.",Administrative & Correspondence
+4,"Memo dalaman yang memaklumkan tentang pelantikan pegawai baharu di Unit Pentadbiran.",Administrative & Correspondence
+5,"Email notification sent to staff regarding a change in office operating hours.",Administrative & Correspondence
+6,"Emel pemberitahuan kepada semua kakitangan tentang perubahan waktu operasi pejabat.",Administrative & Correspondence
+7,"Meeting invitation for inter-department coordination discussion.",Administrative & Correspondence
+8,"Surat jemputan menghadiri mesyuarat penyelarasan antara jabatan.",Administrative & Correspondence
+9,"Official acknowledgment letter for document submission.",Administrative & Correspondence
+10,"Surat makluman keputusan permohonan kerja kepada calon yang tidak berjaya.",Administrative & Correspondence
+11,"Circular about new communication procedures for internal correspondence.",Administrative & Correspondence
+12,"Arahan edaran berkaitan prosedur komunikasi dalaman yang baharu.",Administrative & Correspondence
+13,"Notification of staff promotion and transfer.",Administrative & Correspondence
+14,"Surat pemakluman pertukaran dan kenaikan pangkat pegawai.",Administrative & Correspondence
+15,"Internal reminder on submission deadline for monthly reports.",Administrative & Correspondence
+16,"Peringatan dalaman mengenai tarikh akhir penyerahan laporan bulanan.",Administrative & Correspondence
+17,"Administrative circular regarding updated letter formatting standards.",Administrative & Correspondence
+18,"Surat pekeliling pentadbiran mengenai format surat rasmi terkini.",Administrative & Correspondence
+19,"Official correspondence regarding public holiday declaration.",Administrative & Correspondence
+20,"Surat makluman cuti umum rasmi daripada Jabatan Perkhidmatan Awam.",Administrative & Correspondence
+21,"Official quotation request for purchase of office equipment.",Financial & Procurement
+22,"Permintaan sebutharga rasmi bagi pembelian peralatan pejabat.",Financial & Procurement
+23,"Invoice received for ICT maintenance service.",Financial & Procurement
+24,"Invois diterima bagi perkhidmatan penyelenggaraan ICT.",Financial & Procurement
+25,"Budget report for the first quarter of the fiscal year.",Financial & Procurement
+26,"Laporan bajet bagi suku pertama tahun kewangan.",Financial & Procurement
+27,"Request for additional allocation for building maintenance.",Financial & Procurement
+28,"Permohonan peruntukan tambahan untuk penyelenggaraan bangunan kerajaan.",Financial & Procurement
+29,"Payment authorization letter for supplier invoice.",Financial & Procurement
+30,"Surat kelulusan pembayaran kepada pembekal peralatan pejabat.",Financial & Procurement
+31,"Quotation summary for the purchase of new laptops.",Financial & Procurement
+32,"Ringkasan sebutharga bagi pembelian komputer riba baharu.",Financial & Procurement
+33,"Financial statement showing project expenditure and allocation.",Financial & Procurement
+34,"Penyata kewangan menunjukkan perbelanjaan dan peruntukan projek.",Financial & Procurement
+35,"Internal memo regarding cost reduction measures for the department.",Financial & Procurement
+36,"Memo dalaman mengenai langkah penjimatan kos jabatan.",Financial & Procurement
+37,"Supplier registration form for government procurement system.",Financial & Procurement
+38,"Borang pendaftaran pembekal bagi sistem perolehan kerajaan.",Financial & Procurement
+39,"Official tender document for renovation works.",Financial & Procurement
+40,"Dokumen tender rasmi bagi kerja-kerja pengubahsuaian.",Financial & Procurement
+41,"Application form for renewal of business license.",Application & Forms
+42,"Borang permohonan pembaharuan lesen perniagaan.",Application & Forms
+43,"Form for applying staff travel allowance.",Application & Forms
+44,"Borang tuntutan elaun perjalanan rasmi pegawai.",Application & Forms
+45,"Application for use of government multipurpose hall.",Application & Forms
+46,"Permohonan penggunaan dewan serbaguna kerajaan.",Application & Forms
+47,"Form for financial assistance application for local students.",Application & Forms
+48,"Borang permohonan bantuan kewangan bagi pelajar tempatan.",Application & Forms
+49,"Application form for halal certification of local food products.",Application & Forms
+50,"Borang permohonan sijil halal bagi produk makanan tempatan.",Application & Forms
+51,"Official job application form for administrative positions.",Application & Forms
+52,"Borang rasmi permohonan kerja bagi jawatan pentadbiran.",Application & Forms
+53,"Leave application form submitted to Human Resource Division.",Application & Forms
+54,"Borang permohonan cuti dihantar kepada Bahagian Sumber Manusia.",Application & Forms
+55,"Online application confirmation for government aid program.",Application & Forms
+56,"Pengesahan permohonan dalam talian bagi program bantuan kerajaan.",Application & Forms
+57,"Request form for government housing allocation.",Application & Forms
+58,"Borang permohonan penempatan perumahan kerajaan.",Application & Forms
+59,"Permit application for event organization in public areas.",Application & Forms
+60,"Borang permohonan permit penganjuran acara di kawasan awam.",Application & Forms
+61,"Circular on updated data security policy for government systems.",Policy & Directives
+62,"Pekeliling mengenai dasar keselamatan data terkini bagi sistem kerajaan.",Policy & Directives
+63,"Directive on proper handling of confidential documents.",Policy & Directives
+64,"Arahan rasmi mengenai pengendalian dokumen sulit.",Policy & Directives
+65,"Official guideline for using government email accounts.",Policy & Directives
+66,"Garis panduan rasmi bagi penggunaan akaun e-mel kerajaan.",Policy & Directives
+67,"Policy paper on flexible working arrangements for civil servants.",Policy & Directives
+68,"Dasar kerja fleksibel untuk penjawat awam yang diluluskan oleh kerajaan.",Policy & Directives
+69,"Official memo introducing updated meeting management procedures.",Policy & Directives
+70,"Memo rasmi memperkenalkan tatacara baharu pengurusan mesyuarat.",Policy & Directives
+71,"Directive from the ministry regarding the digitalization of services.",Policy & Directives
+72,"Arahan kementerian mengenai pendigitalan perkhidmatan kerajaan.",Policy & Directives
+73,"Policy circular on staff code of ethics and conduct.",Policy & Directives
+74,"Pekeliling dasar berkaitan tatakelakuan dan etika kakitangan.",Policy & Directives
+75,"New guideline on public communication and media response.",Policy & Directives
+76,"Garis panduan baharu mengenai komunikasi awam dan maklum balas media.",Policy & Directives
+77,"Official announcement on implementation of environmental policy.",Policy & Directives
+78,"Pengumuman rasmi mengenai pelaksanaan dasar alam sekitar.",Policy & Directives
+79,"Instruction letter for compliance with government circulars.",Policy & Directives
+80,"Surat arahan pematuhan terhadap pekeliling kerajaan.",Policy & Directives
