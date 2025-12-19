@@ -28,7 +28,7 @@ class TextSummarizer:
         return " ".join(cleaned_lines)  
 
     # Fixes and splits sentences to overcome long sentences, missing punctuations and assist malay structures
-    def split_sentences(self, text):
+    def fix_sentences(self, text):
         # Fix common lowercase "i" issue for English
         text = text.replace(" i ", " I ")
 
@@ -79,7 +79,7 @@ class TextSummarizer:
         cleaned = self.clean_text_for_summary(text)
 
         # Step 2: Sentence extraction
-        sentences = self.split_sentences(cleaned)
+        sentences = self.fix_sentences(cleaned)
 
         if len(sentences) == 0:
             return "(No meaningful sentences found.)"

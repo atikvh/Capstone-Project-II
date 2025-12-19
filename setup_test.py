@@ -83,7 +83,7 @@ dalam aspek peraturan, etika dan kepercayaan. Organisasi mesti mengimbangi
 inovasi dengan tanggungjawab dalam penggunaan.
 """
 summary = summarize(long_text, ratio=0.3) #30% of original text
-print("Summary: \n", summary.strip())
+print("Summary: \n", summary.strip()) # type: ignore
 
 # 5. Streamlit import test
 print("\n Testing streamlit import...")

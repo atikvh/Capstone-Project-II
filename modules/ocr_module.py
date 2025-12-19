@@ -10,11 +10,22 @@ import os
 
 
 class TextExtractor:
-    def __init__(self, lang="msa+eng"):
+    def __init__(self, lang="msa+eng", header_ratio=0.08, footer_ratio=0.08):
         self.lang = lang
+        self.header_ratio = header_ratio
+        self.footer_ratio = footer_ratio
+
+    def crop_header_footer(self, image):
+        # Remove top and bottom portions of image to reduce noice
+        width, height = image.size
+        top = int(height* self.header_ratio)
+        bottom = int(height*(1-self.footer_ratio))
+
+        return image.crop((0, top, width, bottom))
 
     # Extract text from image to strings with tesseract
     def extract_text(self, image): 
+        image = self.crop_header_footer(image)
         text = pytesseract.image_to_string(image, lang=self.lang)
         return text.strip()
 
