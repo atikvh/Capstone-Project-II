@@ -105,6 +105,18 @@ st.set_page_config(page_title="IDOS Document Analyzer", layout="wide")
 st.title("Integerated Document Organization System")
 st.write("Upload a PDF or Image to extract text, classify, and optionally summarize.")
 
+if "summary_generated" not in st.session_state:
+    st.session_state.summary_generated = False
+
+if "alt_generated" not in st.session_state:
+    st.session_state.alt_generated = False
+
+if "_last_summary" not in st.session_state:
+    st.session_state["_last_summary"] = None
+
+if "last_uploaded_file" not in st.session_state:
+    st.session_state.last_uploaded_file = None
+
 uploaded_file = st.file_uploader("Choose a PDF or image (jpg/png/pdf)", type=["pdf", "jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
@@ -122,6 +134,13 @@ if uploaded_file is not None:
         st.stop()
 
     col_left, col_right = st.columns([1.2, 1])
+    
+    # Reset state ONLY if a new file is uploaded 
+    if uploaded_file.name != st.session_state.last_uploaded_file:
+        st.session_state.summary_generated = False
+        st.session_state.alt_generated = False
+        st.session_state["_last_summary"] = None
+        st.session_state.last_uploaded_file = uploaded_file.name
 
     # LEFT: preview
     with col_left:
@@ -176,57 +195,57 @@ if uploaded_file is not None:
         st.success(predicted_category)
 
         # Summarization controls
-        st.write("### 📝 Summarization")
-        UNSUMMARY = ["Application & Forms", "Financial & Procurement"]
-
-        # Determine if summarization is allowed (simple contains check)
-        can_summarize = not any(cat in predicted_category for cat in UNSUMMARY)
+        st.write("### 📝 Content Takeaways")
 
         summarizer = TextSummarizer()
+        STRUCTURED = ["Application & Forms", "Financial & Procurement"]
 
-        if not can_summarize:
-            st.warning("Summarization is disabled for form/structured documents.")
+        if any(cat in predicted_category for cat in STRUCTURED):
+            with st.spinner("Extracting key information..."):
+                key_info = summarizer.extract_key_information(
+                    raw_text, category=predicted_category
+                )
+            st.text(key_info)
+
         else:
-            if st.button("📝 Generate Summary"):
-                with st.spinner("Generating summary..."):
-                    # primary attempt: use summarizer.summarize
-                    try:
-                        primary = summarizer.summarize(raw_text, sentence_count=3, randomize=False)
-                        st.subheader("Summary")
-                        st.write(primary)
+            if st.session_state["_last_summary"]:
+                st.subheader("Summary")
+                st.write(st.session_state["_last_summary"])
+            # STATE 1 — Initial: Generate Summary
+            if not st.session_state.summary_generated and not st.session_state.alt_generated:
+                if st.button("📝 Generate Summary"):
+                    with st.spinner("Generating summary..."):
+                        try:
+                            primary = summarizer.summarize(
+                                raw_text,
+                                sentence_count=3,
+                                randomize=False
+                            )
+                        except Exception:
+                            primary = alt_summary_from_text(raw_text)
+
                         st.session_state["_last_summary"] = primary
-                    except Exception as e:
-                        st.error(f"Summarizer failed: {e}")
-                        # fallback: produce alt summary
-                        fallback = alt_summary_from_text(raw_text)
-                        st.subheader("Alternative Summary (fallback)")
-                        st.write(fallback)
-                        st.session_state["_last_summary"] = fallback
+                        st.session_state.summary_generated = True
+                    st.rerun()
 
-            # Alternative / regenerate button
-            if " _last_summary" not in st.session_state:
-                st.session_state["_last_summary"] = None
+            # STATE 2 — After summary: Generate Another Version
+            elif st.session_state.summary_generated and not st.session_state.alt_generated:
+                if st.button("🔄 Generate Another Version"):
+                    with st.spinner("Generating alternative summary..."):
+                        try:
+                            alt = summarizer.summarize(raw_text, randomize=True)
+                        except Exception:
+                            alt = alt_summary_from_text(
+                                raw_text, ratio=0.25, max_sentences=5
+                            )
 
-            if st.button("🔄 Generate Another Version"):
-                with st.spinner("Generating alternative summary..."):
-                    # If summarizer supports randomize param, try it first
-                    alt = None
-                    try:
-                        # try calling with randomize kwarg
-                        alt = summarizer.summarize(raw_text, randomize=True)
-                    except TypeError:
-                        # summarizer.summarize doesn't accept randomize
-                        alt = None
-                    except Exception:
-                        alt = None
+                        st.session_state["_last_summary"] = alt
+                        st.session_state.alt_generated = True
+                    st.rerun()
 
-                    # fallback to a simple randomized sentence sample
-                    if not alt:
-                        alt = alt_summary_from_text(raw_text, ratio=0.25, max_sentences=5)
+            elif st.session_state.summary_generated and st.session_state.alt_generated:
+                st.info("Summary generation completed.")
 
-                    st.subheader("Alternative Summary")
-                    st.write(alt)
-                    st.session_state["_last_summary"] = alt
 
     # cleanup temp file
     try:

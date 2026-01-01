@@ -73,17 +73,17 @@ def extract_text_from_ocr(ocr_results):
 # ------------------ MAIN PIPELINE ------------------
 def run_pipeline(input_path):
     print("\n===================================")
-    print("📌 IDOS FULL PIPELINE INITIALIZED")
+    print("IDOS FULL PIPELINE INITIALIZED")
     print("===================================\n")
 
     # --- STEP 0: Validation ---
-    print("🛂 STEP 0 — Validating document...")
+    print("STEP 0 — Validating document...")
     validator = DocumentValidator()
     validator.validate(input_path)
-    print("   ✔ Document validation passed.\n")
+    print("   !! Document validation passed.\n")
 
     # --- STEP 1: OCR ---
-    print("🔍 STEP 1 — Extracting text (OCR)...")
+    print("STEP 1 — Extracting text (OCR)...")
 
     ocr = OCRManager(lang="msa+eng")
     file_type = detect_file_type(input_path)
@@ -96,20 +96,20 @@ def run_pipeline(input_path):
 
     raw_text = extract_text_from_ocr(ocr_results)
 
-    print("   ✔ OCR completed.")
-    print(f"   ✔ Extracted {len(raw_text)} characters.\n")
+    print("   !! OCR completed.")
+    print(f"   Extracted {len(raw_text)} characters.\n")
 
     # --- STEP 2: Preprocessing ---
-    print("🧹 STEP 2 — Preprocessing text...")
+    print("STEP 2 — Preprocessing text...")
 
     preprocessor = TextPreprocessor(lang="msa+eng")
     cleaned_text = preprocessor.preprocess(raw_text)
 
-    print("   ✔ Preprocessing completed.")
-    print(f"   ✔ Cleaned length: {len(cleaned_text)} characters.\n")
+    print("   !! Preprocessing completed.")
+    print(f"   Cleaned length: {len(cleaned_text)} characters.\n")
 
     # --- STEP 3: Categorization ---
-    print("🗂 STEP 3 — Categorizing document...")
+    print("STEP 3 — Categorizing document...")
 
     categorizer = DocumentCategorizer(
         model_type="svm",
@@ -119,11 +119,11 @@ def run_pipeline(input_path):
     categorizer.load_model()
     predicted_category = categorizer.predict(cleaned_text)
 
-    print("   ✔ Categorization completed.")
-    print(f"   📌 Predicted Category: {predicted_category}\n")
+    print("   !! Categorization completed.")
+    print(f"   Predicted Category: {predicted_category}\n")
 
     # --- STEP 4: Summarization ---
-    print("📝 STEP 4 — Summarizing document...")
+    print("STEP 4 — Summarizing document...")
 
     summarizer = TextSummarizer()
 
@@ -132,16 +132,16 @@ def run_pipeline(input_path):
         print("   ⚠ Summarization skipped for form-type documents.")
     else:
         summary = summarizer.summarize(raw_text, sentence_count=3, randomize=False)
-        print("   ✔ Summarization completed.")
+        print("   !! Summarization completed.")
 
     # --- OUTPUT SUMMARY ---
     print("\n===================================")
-    print("🎉 PIPELINE RESULT SUMMARY")
+    print("PIPELINE RESULT SUMMARY")
     print("===================================\n")
 
-    print("📁 File:", input_path)
-    print("📌 Category:", predicted_category)
-    print("\n📝 Summary Output:\n")
+    print("File:", input_path)
+    print("Category:", predicted_category)
+    print("\nSummary Output:\n")
     print(summary)
     print("\n===================================\n")
 
