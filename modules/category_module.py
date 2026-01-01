@@ -40,7 +40,7 @@ class DocumentCategorizer:
             raise ValueError(f"Unsupported model type: {self.model_type}")
 
         self.pipeline = Pipeline([
-            ("tfidf", TfidfVectorizer(max_features=5000, ngram_range=(1, 2))),
+            ("tfidf", TfidfVectorizer(max_features=8000, ngram_range=(1, 2), min_df=2, sublinear_tf=True)),
             ("clf", model)
         ])
 
