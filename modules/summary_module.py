@@ -19,33 +19,35 @@ class TextSummarizer:
 
     # Prepares the raw text from ocr before undergoing summarization
     def clean_text_for_summary(self, text):
-        lines = text.split("\n")
+        if not text or not isinstance(text, str):
+            return ""
+
+        lines = text.splitlines()
         meaningful_lines = []
+
+        SUBJECT_PATTERNS = r"^\s*(subject|per|perkara|tajuk|re)\s*[:\-]"
 
         for line in lines:
             line = line.strip()
+
             if not line:
                 continue
-
-            # Remove likely header/meta lines
-            if re.match(r"^[A-Z\s\W]+$", line):  # all caps
+            # Ignore ALL CAPS lines (headers, departments, titles)
+            if re.fullmatch(r"[A-Z\s\W]+", line):
                 continue
-            if len(line.split()) <= 8 and re.search(r"[\d/:]", line):  # reference numbers / dates
+            # Ignore subject / title lines
+            if re.search(SUBJECT_PATTERNS, line, re.IGNORECASE):
                 continue
-            if len(line.split()) <= 3:  # very short lines
+            # Ignore very short lines (likely names, labels, noise)
+            if len(line.split()) < 5:
                 continue
-            if re.match(r"^\w+\s*:", line): # titles or subject line
+            # Ignore reference / date-heavy metadata lines
+            if len(line.split()) <= 8 and re.search(r"\b(\d{2,}|/|:|-)\b", line):
                 continue
-            if len(line.split()) <= 12 and ":" in line: # with colon
-                continue
-
             meaningful_lines.append(line)
 
-        # fallback to original if all lines removed
-        cleaned_text = " ".join(meaningful_lines) if meaningful_lines else text
-
-        return cleaned_text
-
+        # Fallback: if everything is removed, return original text
+        return " ".join(meaningful_lines) if meaningful_lines else text
 
     # Fixes and splits sentences to overcome long sentences, missing punctuations and assist malay structures
     def fix_sentences(self, text):
@@ -65,51 +67,88 @@ class TextSummarizer:
 
         return refined
 
-    # for documents with structures -> not able to summarize
+    # for documents with field or tables
     def extract_key_information(self, text, category):
         if not text or not isinstance(text, str):
             return "(No content available.)"
-        lines = [l.strip() for l in text.split("\n") if l.strip()]
+
+        lines = [l.strip() for l in text.splitlines() if l.strip()]
         extracted = []
 
-        # Common patterns
-        patterns = {
-            "reference" : r"(reference|rujukan|ref\.?)\s*[:\-]?\s*(.+)",
-            "date": r"(date|tarikh)\s*[:\-]?\s*(.+)",
-            "subject": r"(subject|perkara|per)\s*[:\-]?\s*(.+)",
-            "title_caps": r"^[A-Z\s]{8,}$"
-        }
+        # Patterns
+        APPLICATION_DATE = r"(tarikh\s*permohonan|application\s*date|date\s*submitted|tarikh\s*hantar)"
+        DATE_NUMERIC = r"\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}"
+        DATE_WRITTEN = (
+            r"\d{1,2}"
+            r"(?:st|nd|rd|th)?\s+"
+            r"(January|February|March|April|May|June|July|August|September|October|November|December)"
+            r"\s+\d{4}"
+        )
+        GENERIC_DATE = (
+            r"(?:tarikh|date)\s*[:\-]?\s*("
+            + DATE_NUMERIC
+            + r"|"
+            + DATE_WRITTEN
+            + r")"
+        )
+        REFERENCE_APP = r"(reference|rujukan|ref\.?)\s*(no\.?|number)?\s*[:\-]?\s*[A-Z0-9\/\-]{4,}"
+        FORM_TITLE = r"^(per|perkara|subject|subjek|title)\s*[:\-]\s*([A-Za-z0-9\s\/\-\(\),]{5,120})"
+        REFERENCE_FIN = r"(rfq|tender)\s*(reference)?\s*(no\.?|number)?\s*[:\-]?\s*[A-Z0-9\/\-]{5,}"
+        ISSUE_DATE = r"(date\s*issued|tarikh\s*dikeluarkan)"
+        CLOSING_DATE = r"(closing\s*date|tarikh\s*tutup|tarikh\s*akhir)"
 
-        # Predicted category: Application & Forms
         if "Application & Forms" in category:
-            for line in lines[:30]:  # only scan top section
-                if re.search(patterns["subject"], line, re.IGNORECASE):
-                    extracted.append(f"• Application Title: {line}")
-                elif re.search(patterns["date"], line, re.IGNORECASE):
-                    extracted.append(f"• Date: {line}")
-                elif re.search(patterns["reference"], line, re.IGNORECASE):
-                    extracted.append(f"• Reference: {line}")
-
-            if not extracted:
-                extracted.append("• This document relates to important application request matters.")
-                extracted.append("• This document contains structured fields and form-based content.")
-        
-        # Predicted category: Financial & Procurement
-        elif "Financial & Procurement" in category:
             for line in lines[:40]:
-                if re.search(patterns["title_caps"], line):
-                    extracted.append(f"• Procurement Title: {line}")
-                elif re.search(patterns["reference"], line, re.IGNORECASE):
-                    extracted.append(f"• Tender Reference: {line}")
-                elif re.search(patterns["date"], line, re.IGNORECASE):
-                    extracted.append(f"• Important Date: {line}")
+                # Form title
+                if re.search(FORM_TITLE, line, re.IGNORECASE):
+                    extracted.append(f"• Form Title: {line}")
+                    continue
+                # Application/submission date
+                if re.search(APPLICATION_DATE, line, re.IGNORECASE):
+                    extracted.append(f"• Application Submission Date: {line}")
+                    continue
+                # Strict date only
+                m = re.search(GENERIC_DATE, line, re.IGNORECASE)
+                if m:
+                    extracted.append(f"• Date: {m.group(1)}")
+                    continue
+                # Application reference
+                if re.search(REFERENCE_APP, line, re.IGNORECASE):
+                    extracted.append(f"• Application Reference: {line}")
+                    continue
 
             if not extracted:
-                extracted.append("• This document relates to important financial or procurement matters.")
-                extracted.append("• This document contains structured fields and form-based content.")
-            
+                extracted.append("• This document is an application or form containing structured administrative information.")
+                extracted.append("• No explicit submission date, title, or reference number was detected.")
+
+        elif "Financial & Procurement" in category:
+            for line in lines[:60]:
+                if (
+                    line.isupper()
+                    and 6 <= len(line.split()) <= 20
+                    and not re.search(r"(government|ministry|department|darussalam)", line, re.IGNORECASE)
+                ):
+                    extracted.append(f"• Procurement Title: {line}")
+                    continue
+                # Tender reference 
+                if re.search(REFERENCE_FIN, line, re.IGNORECASE):
+                    extracted.append(f"• Tender Reference: {line}")
+                    continue
+                # Issue date
+                if re.search(ISSUE_DATE, line, re.IGNORECASE):
+                    extracted.append(f"• Issue Date: {line}")
+                    continue
+                # Closing date
+                if re.search(CLOSING_DATE, line, re.IGNORECASE):
+                    extracted.append(f"• Closing Date: {line}")
+                    continue
+            if not extracted:
+                extracted.append("• This document relates to financial or procurement matters.")
+                extracted.append("• No clear tender reference or key dates were detected.")
         else:
-            extracted.append("• No structured key information available.")
+            extracted.append("• No structured key information available for this document type.")
+
+        # Remove duplicates while preserving order
         return "\n".join(dict.fromkeys(extracted))
 
 
@@ -130,7 +169,7 @@ class TextSummarizer:
         if randomize:
             # Mix TextRank score (70%) + random importance (30%)
             random_boost = np.random.uniform(0.0, 1.0, len(scores))
-            scores = (scores * 0.7) + (random_boost * 0.3)
+            scores = (scores * 0.6) + (random_boost * 0.4)
 
         ranked_idx = np.argsort(scores)[::-1]
         selected_idx = sorted(ranked_idx[:num_sentences])
