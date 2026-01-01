@@ -19,13 +19,33 @@ class TextSummarizer:
 
     # Prepares the raw text from ocr before undergoing summarization
     def clean_text_for_summary(self, text):
-        cleaned_lines = []
-        for line in text.split("\n"): # OCR results can contain meaningless line breaks, can confuse model
+        lines = text.split("\n")
+        meaningful_lines = []
+
+        for line in lines:
             line = line.strip()
             if not line:
                 continue
-            cleaned_lines.append(line)
-        return " ".join(cleaned_lines)  
+
+            # Remove likely header/meta lines
+            if re.match(r"^[A-Z\s\W]+$", line):  # all caps
+                continue
+            if len(line.split()) <= 8 and re.search(r"[\d/:]", line):  # reference numbers / dates
+                continue
+            if len(line.split()) <= 3:  # very short lines
+                continue
+            if re.match(r"^\w+\s*:", line): # titles or subject line
+                continue
+            if len(line.split()) <= 12 and ":" in line: # with colon
+                continue
+
+            meaningful_lines.append(line)
+
+        # fallback to original if all lines removed
+        cleaned_text = " ".join(meaningful_lines) if meaningful_lines else text
+
+        return cleaned_text
+
 
     # Fixes and splits sentences to overcome long sentences, missing punctuations and assist malay structures
     def fix_sentences(self, text):
@@ -44,6 +64,54 @@ class TextSummarizer:
                     refined.append(p)
 
         return refined
+
+    # for documents with structures -> not able to summarize
+    def extract_key_information(self, text, category):
+        if not text or not isinstance(text, str):
+            return "(No content available.)"
+        lines = [l.strip() for l in text.split("\n") if l.strip()]
+        extracted = []
+
+        # Common patterns
+        patterns = {
+            "reference" : r"(reference|rujukan|ref\.?)\s*[:\-]?\s*(.+)",
+            "date": r"(date|tarikh)\s*[:\-]?\s*(.+)",
+            "subject": r"(subject|perkara|per)\s*[:\-]?\s*(.+)",
+            "title_caps": r"^[A-Z\s]{8,}$"
+        }
+
+        # Predicted category: Application & Forms
+        if "Application & Forms" in category:
+            for line in lines[:30]:  # only scan top section
+                if re.search(patterns["subject"], line, re.IGNORECASE):
+                    extracted.append(f"• Application Title: {line}")
+                elif re.search(patterns["date"], line, re.IGNORECASE):
+                    extracted.append(f"• Date: {line}")
+                elif re.search(patterns["reference"], line, re.IGNORECASE):
+                    extracted.append(f"• Reference: {line}")
+
+            if not extracted:
+                extracted.append("• This document relates to important application request matters.")
+                extracted.append("• This document contains structured fields and form-based content.")
+        
+        # Predicted category: Financial & Procurement
+        elif "Financial & Procurement" in category:
+            for line in lines[:40]:
+                if re.search(patterns["title_caps"], line):
+                    extracted.append(f"• Procurement Title: {line}")
+                elif re.search(patterns["reference"], line, re.IGNORECASE):
+                    extracted.append(f"• Tender Reference: {line}")
+                elif re.search(patterns["date"], line, re.IGNORECASE):
+                    extracted.append(f"• Important Date: {line}")
+
+            if not extracted:
+                extracted.append("• This document relates to important financial or procurement matters.")
+                extracted.append("• This document contains structured fields and form-based content.")
+            
+        else:
+            extracted.append("• No structured key information available.")
+        return "\n".join(dict.fromkeys(extracted))
+
 
     # model method
     def textrank(self, sentences, num_sentences=3, randomize=False):
