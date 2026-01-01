@@ -76,7 +76,7 @@ class OCRResultManager:
 if __name__ == "__main__":
     print("Running OCR Test...\n")
 
-    input_path = "datasets/archived/Gangguan Teknikal.jpg" 
+    input_path = "datasets/archived/Administrative.png" 
     output_path = "datasets/ocr_result.txt"
 
     try:
