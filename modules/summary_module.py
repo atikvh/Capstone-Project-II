@@ -202,7 +202,7 @@ class TextSummarizer:
         summary = " ".join(best_sentences).strip()
 
         return summary
-
+'''
 # ========== TEST BLOCK ==========
 if __name__ == "__main__":
     ocr_output_path = "datasets/ocr_result.txt"
@@ -212,3 +212,4 @@ if __name__ == "__main__":
     s = TextSummarizer()
     print("SUMMARY:\n", s.summarize(text, 3))
     print("\nRANDOMIZED SUMMARY:\n", s.summarize(text, 3, randomize=True))
+'''

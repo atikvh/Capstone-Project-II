@@ -58,7 +58,8 @@ class TextPreprocessor:
             text = self.stem_words(text)
 
         return text
-    
+
+'''
 # ========== TEST BLOCK ==========
 if __name__ == "__main__":
     print("Starting Preprocessing Module Test...\n")
@@ -105,3 +106,4 @@ if __name__ == "__main__":
 
     except Exception as e:
         print(f"Preprocessing module test failed: {e}")
+'''

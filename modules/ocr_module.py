@@ -71,7 +71,7 @@ class OCRResultManager:
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(clean_text)
         print(f"[Saved] Clean OCR text saved to: {output_path}")
-
+'''
 # ========== TEST BLOCK ==========
 if __name__ == "__main__":
     print("Running OCR Test...\n")
@@ -89,3 +89,4 @@ if __name__ == "__main__":
 
     except Exception as e:
         print(f"OCR test failed: {e}")
+'''

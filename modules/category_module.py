@@ -114,7 +114,7 @@ class DocumentCategorizer:
 
         return self.pipeline.predict([text])[0] # type: ignore
 
-
+'''
 # ========== TEST BLOCK ==========
 if __name__ == "__main__":
     print("Starting Categorization Module Test...\n")
@@ -142,3 +142,4 @@ if __name__ == "__main__":
 
     except Exception as e:
         print(f"Categorization test failed: {e}")
+'''

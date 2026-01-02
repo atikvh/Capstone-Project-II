@@ -29,6 +29,7 @@ class DocumentValidator:
         print(f"File {os.path.basename(file_path)} is compatible with the system.")
         return True
 
+'''
 # ========== TEST BLOCK ==========-
 if __name__ == "__main__":
     # Example test only runs when executing this file directly.
@@ -39,3 +40,4 @@ if __name__ == "__main__":
     except ValueError as e:
         print(f"[ERROR] {e}")
         exit()
+'''
